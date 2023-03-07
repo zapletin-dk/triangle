@@ -1,15 +1,11 @@
 package com.epam.rd.autotasks.triangle;
-import java.util.Arrays;
 
+import java.util.Arrays;
 import static java.lang.Math.sqrt;
 
 class Triangle {
-    private final Point a;
-    private final Point b;
-    private final Point c;
-    private final Segment side_AB;
-    private final Segment side_BC;
-    private final Segment side_AC;
+    private final Point a, b , c;
+    private final Segment side_AB, side_BC, side_AC;
 
     public Triangle(Point a, Point b, Point c) {
         this.a = a;
@@ -23,7 +19,7 @@ class Triangle {
         }
     }
     public boolean sideCondition(){
-        double []sides = {side_AC.length(), side_BC.length(), side_AB.length()};
+        double[] sides = {side_AC.length(), side_BC.length(), side_AB.length()};
         Arrays.sort(sides);
         System.out.println(Arrays.toString(sides));
         return (sides[0] + sides[1] > sides [2]);

@@ -4,27 +4,27 @@ import static java.lang.Math.*;
 import static java.lang.StrictMath.pow;
 
 class Segment {
-    private final Point start;
-    private final Point end;
-
-    public Segment(Point start, Point end) {
-        this.start = start;
-        this.end = end;
-        if ((start.getX() == end.getX()) &&
-                (start.getY() == end.getY())) {
+    private final Point startPointOfSegment;
+    private final Point endPointOfSegment;
+    public Segment(Point startPointOfSegment, Point endPointOfSegment) {
+        this.startPointOfSegment = startPointOfSegment;
+        this.endPointOfSegment = endPointOfSegment;
+        if ((startPointOfSegment.getX() == endPointOfSegment.getX()) &&
+                (startPointOfSegment.getY() == endPointOfSegment.getY())){
             throw new IllegalArgumentException("You can't make side with two equal dots");
         }
     }
     double length() {
         return sqrt(
-                pow(end.getX() - start.getX(), 2) +
-                pow(end.getY() - start.getY(), 2));
+                pow(endPointOfSegment.getX() - startPointOfSegment.getX(), 2) +
+                        pow(endPointOfSegment.getY() - startPointOfSegment.getY(), 2) );
     }
-    boolean inRange(Segment segment, Point intersection){
-        double minX_First = min(start.getX(), end.getX());
-        double maxX_First = max(start.getX(), end.getX());
-        double minX_Second = min(segment.start.getX(), segment.end.getX());
-        double maxX_Second = max(segment.start.getX(), segment.end.getX());
+
+    boolean intersectionInRangeOfSegments(Segment anotherSegment, Point intersection){
+        double minX_First = min(startPointOfSegment.getX(), endPointOfSegment.getX());
+        double maxX_First = max(startPointOfSegment.getX(), endPointOfSegment.getX());
+        double minX_Second = min(anotherSegment.startPointOfSegment.getX(), anotherSegment.endPointOfSegment.getX());
+        double maxX_Second = max(anotherSegment.startPointOfSegment.getX(), anotherSegment.endPointOfSegment.getX());
 
         return minX_First <= intersection.getX() &&
                 intersection.getX() <= maxX_First &&
@@ -32,22 +32,27 @@ class Segment {
                 intersection.getX() <= maxX_Second;
     }
     Point middle() {
-        return new Point((start.getX() + end.getX()) / 2,
-                (start.getY() + end.getY()) / 2 );
+        return new Point((startPointOfSegment.getX() + endPointOfSegment.getX()) / 2,
+                (startPointOfSegment.getY() + endPointOfSegment.getY()) / 2 );
     }
+
+    /**
+     * This method finds the intersection of two segments via formula using their coordinates
+     * for more information look here <a href="https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection">wiki</a>
+     */
     Point intersection(Segment another) {
         final double a;
         final double b;
         final double c;
-        a = (start.getX() * end.getY()) - (start.getY() * end.getX());
-        b = (another.start.getX() * another.end.getY()) - (another.start.getY() * another.end.getX());
-        c = (start.getX() - end.getX()) * (another.start.getY() - another.end.getY()) -
-                (start.getY() - end.getY()) * (another.start.getX() - another.end.getX());
-        Point result = new Point((a * (another.start.getX() - another.end.getX()) - b * (start.getX() - end.getX())) / c,
-                (a * (another.start.getY() - another.end.getY()) - b * (start.getY() - end.getY())) / c);
+        a = (startPointOfSegment.getX() * endPointOfSegment.getY()) - (startPointOfSegment.getY() * endPointOfSegment.getX());
+        b = (another.startPointOfSegment.getX() * another.endPointOfSegment.getY()) - (another.startPointOfSegment.getY() * another.endPointOfSegment.getX());
+        c = (startPointOfSegment.getX() - endPointOfSegment.getX()) * (another.startPointOfSegment.getY() - another.endPointOfSegment.getY()) -
+            (startPointOfSegment.getY() - endPointOfSegment.getY()) * (another.startPointOfSegment.getX() - another.endPointOfSegment.getX());
+        Point result = new Point((a * (another.startPointOfSegment.getX() - another.endPointOfSegment.getX()) - b * (startPointOfSegment.getX() - endPointOfSegment.getX())) / c,
+                (a * (another.startPointOfSegment.getY() - another.endPointOfSegment.getY()) - b * (startPointOfSegment.getY() - endPointOfSegment.getY())) / c);
 
-        if ((c != 0) && inRange(another, result)){
+        if ((c != 0) && intersectionInRangeOfSegments(another, result)){
             return result;
-        }else {return null;}
+        } else {return null;}
     }
 }
